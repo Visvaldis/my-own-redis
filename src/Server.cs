@@ -6,4 +6,31 @@ using System.Text;
 TcpListener server = new TcpListener(IPAddress.Any, 6379);
 server.Start();
 var client = server.AcceptSocket(); // wait for client
-client.Send(Encoding.UTF8.GetBytes("+PONG\r\n")); // send response
+try
+{
+    while(true)
+    {
+        byte[] buffer = new byte[1024];
+        int bytesReceived = client.Receive(buffer); // receive data
+        string data = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
+        data = data.Trim();
+        Console.WriteLine(data);
+        if(data == "PING")
+        {
+            client.Send("+PONG\r\n"u8.ToArray()); // send response
+        }
+        else
+        {
+            client.Send("-ERR unknown command\r\n"u8.ToArray()); // send response
+        }
+    }
+}
+catch(Exception ex)
+{
+    Console.WriteLine(ex.Message);
+}
+finally
+{
+    client.Close();
+    server.Stop();
+}
