@@ -15,14 +15,8 @@ try
         string data = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
         data = data.Trim();
         Console.WriteLine(data);
-        if(data == "PING")
-        {
+
             client.Send("+PONG\r\n"u8.ToArray()); // send response
-        }
-        else
-        {
-            client.Send("-ERR unknown command\r\n"u8.ToArray()); // send response
-        }
     }
 }
 catch(Exception ex)
