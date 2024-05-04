@@ -15,8 +15,11 @@ try
         string data = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
         data = data.Trim();
         Console.WriteLine(data);
-
+        var commands = data.Split('\n');
+        foreach (var command in commands)
+        {
             client.Send("+PONG\r\n"u8.ToArray()); // send response
+        }
     }
 }
 catch(Exception ex)
