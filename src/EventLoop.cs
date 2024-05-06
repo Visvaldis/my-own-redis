@@ -18,7 +18,8 @@ namespace codecrafters_redis.src
 
 		public void Start()
 		{
-			//var thread = new Thread(Process)
+			thread = new Thread(Process);
+			thread.Start();
 		}
 
 		public void Stop()
@@ -32,7 +33,7 @@ namespace codecrafters_redis.src
 
 			if (queue.Count == 0)
 			{
-				// sleep
+				thread.Delay();
 			}
 
 			var current = queue.Dequeue();
