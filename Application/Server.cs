@@ -39,7 +39,7 @@ void HandleClient(Socket client)
 {
     try
     {
-        while (client.Connected)
+        while (true)
         {
             byte[] buffer = new byte[1024];
             int bytesReceived = client.Receive(buffer); // receive data
@@ -51,7 +51,10 @@ void HandleClient(Socket client)
             }
 
             Console.WriteLine(data);
-            EventLoop.AddEvent(new PingCommand("PING", client, data));
+            if (data.Length > 0)
+            {
+                EventLoop.AddEvent(new PingCommand("PING", client, data));
+            }
         }
     }
     catch (Exception ex)
