@@ -4,23 +4,24 @@ using System.Text;
 using MyOwnRedis.Application;
 using MyOwnRedis.Application.Commands;
 
+List<Socket> clients = new();
+
+
 async Task Main()
 {
-    
     TcpListener server = new TcpListener(IPAddress.Any, 6379);
     server.Start();
     EventLoop.Start();
-    
-    
-    
-    
+
     try
     {
-        while(true)
+        do
         {
+            
             var client = server.AcceptSocket(); // wait for client
+            clients.Add(client);
             Task.Run(() => HandleClient(client)).ConfigureAwait(false);
-        }
+        } while(clients.Any());
     }
     catch(Exception ex)
     {
@@ -51,6 +52,7 @@ void HandleClient(Socket client)
         EventLoop.AddEvent(new PingCommand("PING", client, data));
     }
     client.Close();
+    clients.Remove(client);
 }
 
 await Main();
