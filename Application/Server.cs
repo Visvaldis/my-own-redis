@@ -12,7 +12,7 @@ async Task Main()
     TcpListener server = new TcpListener(IPAddress.Any, 6379);
     server.Start();
     EventLoop.Start();
-
+    Console.WriteLine("Server started");
     try
     {
         do
@@ -20,6 +20,7 @@ async Task Main()
             
             var client = server.AcceptSocket(); // wait for client
             clients.Add(client);
+            Console.WriteLine("Client connected");
             Task.Run(() => HandleClient(client)).ConfigureAwait(false);
         } while(clients.Any());
     }
@@ -31,11 +32,12 @@ async Task Main()
     {
         server.Stop();
         EventLoop.Stop();
+        Console.WriteLine("Server stopped");
     }
 }
 
 
-void HandleClient(Socket client)
+async Task HandleClient(Socket client)
 {
     try
     {
@@ -50,10 +52,6 @@ void HandleClient(Socket client)
             
             string data = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
             data = data.Trim();
-            if (data.Contains("exit"))
-            {
-                break;
-            }
 
             Console.WriteLine(data);
             if (data.Length > 0)
@@ -70,7 +68,7 @@ void HandleClient(Socket client)
     {
         client.Close();
         clients.Remove(client);
-        client.Dispose();
+        Console.WriteLine("Client disconnected");
     }
 }
 
