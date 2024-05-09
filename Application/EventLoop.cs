@@ -26,6 +26,7 @@ namespace MyOwnRedis.Application
 		public static void Stop()
 		{
 			cancellationTokenSource.Cancel();
+			queue.Clear();
 			//thread stop
 			// queue write down or clear
 		}
