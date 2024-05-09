@@ -27,7 +27,7 @@ async Task Main()
             }
             
             Console.WriteLine(data);
-            EventLoop.AddEvent(new PingCommand("ping", client, data));
+            EventLoop.AddEvent(new PingCommand("PING", client, data));
         }
     }
     catch(Exception ex)

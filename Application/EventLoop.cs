@@ -44,7 +44,7 @@ namespace MyOwnRedis.Application
 			}
 			
 			var current = queue.Dequeue();
-			Console.WriteLine($"--- Processing command {current.Name}");
+			Console.WriteLine($"--- Processing command -- {current.Name}");
 			try
 			{
 				await current.ProcessEvent();

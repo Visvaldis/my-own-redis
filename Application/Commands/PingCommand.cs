@@ -11,7 +11,7 @@ public class PingCommand: Command
     
     public override Task ProcessEvent()
     {
-        Client?.Send("PONG\r\n"u8.ToArray());
+        Client?.Send("+PONG\r\n"u8.ToArray()); // send response
         return Task.CompletedTask;
     }
 }
