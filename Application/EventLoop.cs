@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyOwnRedis.Application.Commands;
 
-namespace codecrafters_redis.src
+namespace MyOwnRedis.Application
 {
 	public static class EventLoop
 	{
-		private static Queue<Event> queue;
+		private static Queue<Command> queue;
 		private static CancellationTokenSource cancellationTokenSource;
-		public static void AddEvent(Event @event)
-		{
-			queue.Enqueue(@event);
-		}
+		
 
-		public async void Start()
+		public static async void Start()
 		{
-			queue = new Queue<Event>();
+			queue = new Queue<Command>();
 			cancellationTokenSource = new CancellationTokenSource();
 			while (!cancellationTokenSource.IsCancellationRequested)
 			{
@@ -25,26 +23,36 @@ namespace codecrafters_redis.src
 			}
 		}
 
-		public void Stop()
+		public static void Stop()
 		{
 			cancellationTokenSource.Cancel();
 			//thread stop
 			// queue write down or clear
 		}
 
-		private async Task Process()
+		public static void AddEvent(Command command)
 		{
-
+			queue.Enqueue(command);
+		}
+		
+		private static async Task Process()
+		{
 			if (queue.Count == 0)
 			{
 				await Task.Delay(250);
+				return;
 			}
-
-			Console.WriteLine("--- Processing event");
-			//var current = queue.Dequeue();
-			//current.ProcessEvent();
+			
+			var current = queue.Dequeue();
+			Console.WriteLine($"--- Processing command {current.Name}");
+			try
+			{
+				await current.ProcessEvent();
+			}
+			catch(Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
 		}
-
-
 	}
 }

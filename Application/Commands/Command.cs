@@ -9,9 +9,11 @@ namespace MyOwnRedis.Application.Commands
 {
 	public abstract class Command
 	{
-		protected Command(string? name)
+		protected Command(string? name, Socket? client, string? body)
 		{
 			Name = name;
+			Client = client;
+			Body = body;
 		}
 
 		public int Id { get; init; }

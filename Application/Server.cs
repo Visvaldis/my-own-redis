@@ -1,12 +1,13 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using codecrafters_redis.src;
+using MyOwnRedis.Application;
+using MyOwnRedis.Application.Commands;
 
 async Task Main()
 {
-    var eventLoop = new EventLoop();
-    eventLoop.Start();
+    
+    EventLoop.Start();
     TcpListener server = new TcpListener(IPAddress.Any, 6379);
     server.Start();
     var client = server.AcceptSocket(); // wait for client
@@ -18,12 +19,15 @@ async Task Main()
             int bytesReceived = client.Receive(buffer); // receive data
             string data = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
             data = data.Trim();
+            
             if (data.Contains("exit"))
             {
-                eventLoop.Stop();
+                EventLoop.Stop();
+                break;
             }
+            
             Console.WriteLine(data);
-            client.Send("+PONG\r\n"u8.ToArray()); // send response
+            EventLoop.AddEvent(new PingCommand("ping", client, data));
         }
     }
     catch(Exception ex)
