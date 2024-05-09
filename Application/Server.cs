@@ -43,6 +43,11 @@ void HandleClient(Socket client)
         {
             byte[] buffer = new byte[1024];
             int bytesReceived = client.Receive(buffer); // receive data
+            if (bytesReceived == 0)
+            {
+                break;
+            }
+            
             string data = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
             data = data.Trim();
             if (data.Contains("exit"))
@@ -65,6 +70,7 @@ void HandleClient(Socket client)
     {
         client.Close();
         clients.Remove(client);
+        client.Dispose();
     }
 }
 
