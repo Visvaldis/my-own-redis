@@ -37,22 +37,33 @@ async Task Main()
 
 void HandleClient(Socket client)
 {
-    while(client.Connected)
+    try
     {
-        byte[] buffer = new byte[1024];
-        int bytesReceived = client.Receive(buffer); // receive data
-        string data = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
-        data = data.Trim();
-        if (data.Contains("exit"))
+        while (client.Connected)
         {
-            break;
+            byte[] buffer = new byte[1024];
+            int bytesReceived = client.Receive(buffer); // receive data
+            string data = Encoding.UTF8.GetString(buffer, 0, bytesReceived);
+            data = data.Trim();
+            if (data.Contains("exit"))
+            {
+                break;
+            }
+
+            Console.WriteLine(data);
+            EventLoop.AddEvent(new PingCommand("PING", client, data));
         }
-            
-        Console.WriteLine(data);
-        EventLoop.AddEvent(new PingCommand("PING", client, data));
     }
-    client.Close();
-    clients.Remove(client);
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        throw;
+    }
+    finally
+    {
+        client.Close();
+        clients.Remove(client);
+    }
 }
 
 await Main();
