@@ -37,7 +37,7 @@ async Task Main()
 
 void HandleClient(Socket client)
 {
-    while(true)
+    while(client.Connected)
     {
         byte[] buffer = new byte[1024];
         int bytesReceived = client.Receive(buffer); // receive data
