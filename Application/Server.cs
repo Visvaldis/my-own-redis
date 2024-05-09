@@ -54,10 +54,9 @@ void HandleClient(Socket client)
             EventLoop.AddEvent(new PingCommand("PING", client, data));
         }
     }
-    catch (Exception e)
+    catch (Exception ex)
     {
-        Console.WriteLine(e);
-        throw;
+        Console.WriteLine(ex);
     }
     finally
     {
